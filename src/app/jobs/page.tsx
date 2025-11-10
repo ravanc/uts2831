@@ -27,6 +27,7 @@ import {
   CheckCircle2,
   Sparkles,
   Send,
+  Lightbulb,
 } from 'lucide-react';
 
 export default function JobsPage() {
@@ -203,6 +204,74 @@ export default function JobsPage() {
       setCoverLetter('');
     }
   };
+
+  // Generate cover letter tips based on job and employee profile
+  const coverLetterTips = useMemo(() => {
+    if (!selectedJobForApplication) return [];
+
+    const { job } = selectedJobForApplication;
+    const tips: string[] = [];
+
+    // Check for required skills the employee has
+    const matchingRequiredSkills = job.skills
+      .filter(s => s.required && currentEmployee.skills.some(es => es.name === s.name))
+      .map(s => s.name);
+
+    if (matchingRequiredSkills.length > 0) {
+      const skillList = matchingRequiredSkills.slice(0, 2).join(' and ');
+      tips.push(`They need ${skillList} expertise — mention specific projects where you used these`);
+    }
+
+    // Check for leadership requirements
+    if (job.title.toLowerCase().includes('senior') || job.title.toLowerCase().includes('lead')) {
+      const hasLeadership = currentEmployee.workExperience.some(e =>
+        e.achievements.some(a =>
+          a.toLowerCase().includes('mentor') ||
+          a.toLowerCase().includes('lead') ||
+          a.toLowerCase().includes('team')
+        )
+      );
+      if (hasLeadership) {
+        tips.push(`Senior role requires leadership — highlight your mentoring or team leadership experience`);
+      }
+    }
+
+    // Check for impact/metrics
+    const hasMetrics = currentEmployee.workExperience.some(e =>
+      e.achievements.some(a => /\d+%|\d+x|\d+\+/.test(a))
+    );
+    if (hasMetrics) {
+      tips.push(`Include measurable outcomes from your past work (percentages, user counts, efficiency gains)`);
+    }
+
+    // Check for remote work preferences
+    if (job.remotePolicy === 'remote' && currentEmployee.preferences.remoteWork) {
+      tips.push(`This is a remote role — mention your experience working effectively in distributed teams`);
+    }
+
+    // Check for collaboration needs
+    if (job.responsibilities.some(r =>
+      r.toLowerCase().includes('collaborate') ||
+      r.toLowerCase().includes('cross-functional') ||
+      r.toLowerCase().includes('team')
+    )) {
+      tips.push(`They value collaboration — reference examples of working across teams or departments`);
+    }
+
+    // Check for specific domain experience
+    if (job.description.toLowerCase().includes('saas') ||
+        job.description.toLowerCase().includes('platform')) {
+      const hasRelevantExp = currentEmployee.workExperience.some(e =>
+        e.company.toLowerCase().includes('saas') ||
+        e.description.toLowerCase().includes('platform')
+      );
+      if (hasRelevantExp) {
+        tips.push(`Mention your SaaS/platform experience to show domain knowledge`);
+      }
+    }
+
+    return tips.slice(0, 3); // Return top 3 tips
+  }, [selectedJobForApplication, currentEmployee]);
 
   return (
     <MainLayout>
@@ -438,6 +507,24 @@ export default function JobsPage() {
                 disabled={isSubmitting}
               />
             </div>
+
+            {/* Cover Letter Tips */}
+            {coverLetterTips.length > 0 && (
+              <div className="bg-gradient-to-r from-lavender/10 to-glacier/10 border-2 border-lavender/50 rounded-lg p-4">
+                <div className="flex items-start gap-2 mb-2">
+                  <Lightbulb className="h-4 w-4 text-lavender-dark mt-0.5 flex-shrink-0" />
+                  <h4 className="text-sm font-semibold text-graphite">Tips for your cover letter</h4>
+                </div>
+                <ul className="space-y-2 ml-6">
+                  {coverLetterTips.map((tip, idx) => (
+                    <li key={idx} className="text-sm text-slate">
+                      {tip}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             <div className="bg-mist-blue/30 border border-mist-blue rounded-lg p-4">
               <p className="text-sm text-slate">
                 <strong className="text-graphite">Your application includes:</strong> Your profile, personality
