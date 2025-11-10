@@ -69,15 +69,15 @@ export function Navbar() {
   const navigationItems = getNavigationItems();
 
   return (
-    <nav className="border-b bg-white">
+    <nav className="border-b bg-cloud">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold">
-              TM
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-glacier-dark to-lavender-dark text-white font-bold">
+              CF
             </div>
-            <span className="text-xl font-bold">TalentMatch</span>
+            <span className="text-xl font-bold text-graphite">CrewFit</span>
           </Link>
 
           {/* Navigation Links */}

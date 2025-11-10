@@ -1,10 +1,10 @@
-# TalentMatch - AI-Powered Talent Matching Platform
+# CrewFit - AI-Powered Talent Matching Platform
 
 A comprehensive talent management and job matching platform mockup that goes beyond traditional resumes by incorporating personality traits, team dynamics, and organizational culture.
 
 ## Overview
 
-TalentMatch demonstrates an advanced talent matching system using an **ensemble personality assessment** approach combining:
+CrewFit demonstrates an advanced talent matching system using an **ensemble personality assessment** approach combining:
 
 - **Big Five (OCEAN)** - Scientifically validated personality framework
 - **Myers-Briggs (MBTI)** - 16 personality type indicator

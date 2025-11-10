@@ -4,10 +4,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**TalentMatch** is a comprehensive talent management and job matching platform mockup that connects employers and employees based on personality traits, skills, and team dynamics. It's built as a frontend-only demonstration using Next.js 14 with TypeScript.
+**CrewFit** is a comprehensive talent management and job matching platform mockup that connects employers and employees based on personality traits, skills, and team dynamics. It's built as a frontend-only demonstration using Next.js 14 with TypeScript.
 
 ### Core Concept
-Unlike traditional job platforms, TalentMatch uses an **ensemble personality assessment** combining:
+Unlike traditional job platforms, CrewFit uses an **ensemble personality assessment** combining:
 - **Big Five (OCEAN)** - Scientifically validated personality traits
 - **MBTI** - 16 personality type framework
 - **DISC** - Work style and communication preferences

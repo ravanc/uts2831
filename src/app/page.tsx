@@ -36,20 +36,20 @@ export default function Home() {
   return (
     <MainLayout>
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-20 md:py-32">
+      <section className="relative overflow-hidden bg-fog py-20 md:py-32">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-4xl text-center">
-            <div className="mb-6 inline-flex items-center rounded-full bg-blue-100 px-4 py-2 text-sm font-medium text-blue-700">
+            <div className="mb-6 inline-flex items-center rounded-full bg-mist-blue px-4 py-2 text-sm font-medium text-graphite">
               <Shield className="mr-2 h-4 w-4" />
               Privacy-First AI Matching
             </div>
-            <h1 className="mb-6 text-5xl font-bold tracking-tight text-gray-900 md:text-7xl">
+            <h1 className="mb-6 text-5xl font-bold tracking-tight text-graphite md:text-7xl">
               Find Where You'll
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-glacier to-lavender bg-clip-text text-transparent">
                 {' '}Actually Thrive
               </span>
             </h1>
-            <p className="mb-10 text-xl text-gray-600 md:text-2xl">
+            <p className="mb-10 text-xl text-slate md:text-2xl">
               We understand your experiences, not just your resume. Get clear, simple reasons
               why you'll succeed at specific companies and teams.
             </p>
@@ -58,13 +58,13 @@ export default function Home() {
               <div className="mb-8">
                 <Button
                   size="lg"
-                  className="w-full sm:w-auto bg-[#0077B5] hover:bg-[#006399] text-white px-8 py-6 text-lg"
+                  className="w-full sm:w-auto bg-glacier-dark hover:bg-glacier-darker text-white px-8 py-6 text-lg"
                   onClick={handleLinkedInConnect}
                 >
                   <Linkedin className="mr-3 h-6 w-6" />
                   Link my LinkedIn profile
                 </Button>
-                <p className="mt-3 text-sm text-gray-500">Connect in seconds. Your data stays private.</p>
+                <p className="mt-3 text-sm text-slate">Connect in seconds. Your data stays private.</p>
               </div>
             ) : (
               <div className="mb-8">
@@ -79,14 +79,14 @@ export default function Home() {
 
             {showChoice && (
               <div className="mb-8 animate-in fade-in duration-500">
-                <p className="text-lg font-medium text-gray-900 mb-6">
+                <p className="text-lg font-medium text-graphite mb-6">
                   What would you like to do?
                 </p>
                 <div className="grid gap-4 md:grid-cols-2 max-w-2xl mx-auto">
                   <Link href="/jobs">
-                    <Card className="cursor-pointer border-2 hover:border-blue-500 hover:shadow-lg transition-all h-full">
+                    <Card className="cursor-pointer border-2 hover:border-glacier-dark hover:shadow-lg transition-all h-full shadow-sm">
                       <CardHeader>
-                        <Search className="h-12 w-12 text-blue-600 mb-2" />
+                        <Search className="h-12 w-12 text-glacier-dark mb-2" />
                         <CardTitle>Job Surfing</CardTitle>
                         <CardDescription>
                           Find companies and teams where you'll thrive with clear reasons why
@@ -98,9 +98,9 @@ export default function Home() {
                     </Card>
                   </Link>
                   <Link href="/experience">
-                    <Card className="cursor-pointer border-2 hover:border-purple-500 hover:shadow-lg transition-all h-full">
+                    <Card className="cursor-pointer border-2 hover:border-lavender-dark hover:shadow-lg transition-all h-full shadow-sm">
                       <CardHeader>
-                        <LineChart className="h-12 w-12 text-purple-600 mb-2" />
+                        <LineChart className="h-12 w-12 text-lavender-dark mb-2" />
                         <CardTitle>Review My Experience</CardTitle>
                         <CardDescription>
                           See insights about your career journey, best teams, and satisfaction over time
@@ -139,19 +139,19 @@ export default function Home() {
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="mb-16 text-center">
-            <h2 className="mb-4 text-4xl font-bold text-gray-900">
+            <h2 className="mb-4 text-4xl font-bold text-graphite">
               Why We're Different
             </h2>
-            <p className="mx-auto max-w-2xl text-lg text-gray-600">
+            <p className="mx-auto max-w-2xl text-lg text-slate">
               We understand your experiences and projects, not just your resume.
               Get clear, plain-English insights about where you'll succeed.
             </p>
           </div>
 
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <Card className="border-2 hover:shadow-lg transition-shadow">
+            <Card className="border-2 hover:shadow-lg transition-shadow shadow-sm">
               <CardHeader>
-                <Zap className="mb-4 h-12 w-12 text-blue-600" />
+                <Zap className="mb-4 h-12 w-12 text-glacier-dark" />
                 <CardTitle>Instant Understanding</CardTitle>
                 <CardDescription>
                   Get clear reasons why you fit: "You build crisp slides and narratives"
@@ -160,9 +160,9 @@ export default function Home() {
               </CardHeader>
             </Card>
 
-            <Card className="border-2 hover:shadow-lg transition-shadow">
+            <Card className="border-2 hover:shadow-lg transition-shadow shadow-sm">
               <CardHeader>
-                <Shield className="mb-4 h-12 w-12 text-green-600" />
+                <Shield className="mb-4 h-12 w-12 text-glacier-dark" />
                 <CardTitle>Privacy-First</CardTitle>
                 <CardDescription>
                   Companies share non-confidential projects only. Your data stays secure.
@@ -171,9 +171,9 @@ export default function Home() {
               </CardHeader>
             </Card>
 
-            <Card className="border-2 hover:shadow-lg transition-shadow">
+            <Card className="border-2 hover:shadow-lg transition-shadow shadow-sm">
               <CardHeader>
-                <Target className="mb-4 h-12 w-12 text-purple-600" />
+                <Target className="mb-4 h-12 w-12 text-lavender-dark" />
                 <CardTitle>Experience-Based Matching</CardTitle>
                 <CardDescription>
                   Match based on your entrepreneurial interests, module projects, and
@@ -182,9 +182,9 @@ export default function Home() {
               </CardHeader>
             </Card>
 
-            <Card className="border-2 hover:shadow-lg transition-shadow">
+            <Card className="border-2 hover:shadow-lg transition-shadow shadow-sm">
               <CardHeader>
-                <Users className="mb-4 h-12 w-12 text-orange-600" />
+                <Users className="mb-4 h-12 w-12 text-glacier-dark" />
                 <CardTitle>Team Impact Preview</CardTitle>
                 <CardDescription>
                   See exactly how adding you improves team capabilities:
@@ -193,9 +193,9 @@ export default function Home() {
               </CardHeader>
             </Card>
 
-            <Card className="border-2 hover:shadow-lg transition-shadow">
+            <Card className="border-2 hover:shadow-lg transition-shadow shadow-sm">
               <CardHeader>
-                <TrendingUp className="mb-4 h-12 w-12 text-pink-600" />
+                <TrendingUp className="mb-4 h-12 w-12 text-lavender-dark" />
                 <CardTitle>Career Insights</CardTitle>
                 <CardDescription>
                   Track your satisfaction over time, identify your best teams,
@@ -204,9 +204,9 @@ export default function Home() {
               </CardHeader>
             </Card>
 
-            <Card className="border-2 hover:shadow-lg transition-shadow">
+            <Card className="border-2 hover:shadow-lg transition-shadow shadow-sm">
               <CardHeader>
-                <BarChart3 className="mb-4 h-12 w-12 text-indigo-600" />
+                <BarChart3 className="mb-4 h-12 w-12 text-glacier-dark" />
                 <CardTitle>Clear, Simple Reasons</CardTitle>
                 <CardDescription>
                   No jargon. Just plain explanations of fit based on real projects
@@ -219,13 +219,13 @@ export default function Home() {
       </section>
 
       {/* Role Demo Section */}
-      <section className="bg-gray-50 py-20">
+      <section className="bg-muted py-20">
         <div className="container mx-auto px-4">
           <div className="mb-16 text-center">
-            <h2 className="mb-4 text-4xl font-bold text-gray-900">
+            <h2 className="mb-4 text-4xl font-bold text-graphite">
               Explore Different Views
             </h2>
-            <p className="mx-auto max-w-2xl text-lg text-gray-600">
+            <p className="mx-auto max-w-2xl text-lg text-slate">
               This is a demo app. Switch between different roles to see how the platform
               works for employees, employers, and executives.
             </p>
@@ -233,11 +233,11 @@ export default function Home() {
 
           <div className="grid gap-8 md:grid-cols-3">
             <Card
-              className="cursor-pointer border-2 hover:border-blue-500 hover:shadow-lg transition-all"
+              className="cursor-pointer border-2 hover:border-glacier-dark hover:shadow-lg transition-all shadow-sm"
               onClick={() => switchRole('employee')}
             >
               <CardHeader>
-                <User className="mb-4 h-12 w-12 text-blue-600" />
+                <User className="mb-4 h-12 w-12 text-glacier-dark" />
                 <CardTitle>Employee View</CardTitle>
                 <CardDescription>
                   Build your profile, showcase projects, and find jobs that match
@@ -255,11 +255,11 @@ export default function Home() {
             </Card>
 
             <Card
-              className="cursor-pointer border-2 hover:border-green-500 hover:shadow-lg transition-all"
+              className="cursor-pointer border-2 hover:border-glacier-dark hover:shadow-lg transition-all shadow-sm"
               onClick={() => switchRole('employer')}
             >
               <CardHeader>
-                <Briefcase className="mb-4 h-12 w-12 text-green-600" />
+                <Briefcase className="mb-4 h-12 w-12 text-glacier-dark" />
                 <CardTitle>Employer View</CardTitle>
                 <CardDescription>
                   Search for candidates, view personality matches, and find the
@@ -277,11 +277,11 @@ export default function Home() {
             </Card>
 
             <Card
-              className="cursor-pointer border-2 hover:border-purple-500 hover:shadow-lg transition-all"
+              className="cursor-pointer border-2 hover:border-lavender-dark hover:shadow-lg transition-all shadow-sm"
               onClick={() => switchRole('executive')}
             >
               <CardHeader>
-                <Building2 className="mb-4 h-12 w-12 text-purple-600" />
+                <Building2 className="mb-4 h-12 w-12 text-lavender-dark" />
                 <CardTitle>Executive View</CardTitle>
                 <CardDescription>
                   Access team analytics, org structure insights, and data-driven
@@ -302,12 +302,12 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-purple-600 py-20 text-white">
+      <section className="bg-gradient-to-r from-glacier-dark to-lavender-dark py-20 text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="mb-4 text-4xl font-bold">
             Ready to Find Your Perfect Match?
           </h2>
-          <p className="mb-8 text-xl opacity-90">
+          <p className="mb-8 text-xl opacity-95">
             Start exploring the platform with your preferred view
           </p>
           <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">

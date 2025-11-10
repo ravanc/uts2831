@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TalentMatch - Find Your Perfect Fit",
+  title: "CrewFit - Find Your Perfect Fit",
   description: "AI-powered talent matching platform connecting employers and employees",
 };
 
