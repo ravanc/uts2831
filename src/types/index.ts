@@ -362,3 +362,33 @@ export interface HiringRecommendation {
   };
   topCandidates: CandidateMatch[];
 }
+
+// ============================================================================
+// Job Applications
+// ============================================================================
+
+export type ApplicationStatus =
+  | 'applied'
+  | 'reviewing'
+  | 'interviewing'
+  | 'offer'
+  | 'accepted'
+  | 'rejected';
+
+export interface ApplicationStatusHistoryEntry {
+  status: ApplicationStatus;
+  timestamp: Date;
+  note?: string;
+}
+
+export interface JobApplication {
+  id: string;
+  jobId: string;
+  employeeId: string;
+  status: ApplicationStatus;
+  appliedDate: Date;
+  lastUpdated: Date;
+  coverLetter?: string;
+  matchScore: number;
+  statusHistory: ApplicationStatusHistoryEntry[];
+}

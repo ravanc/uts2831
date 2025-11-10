@@ -55,7 +55,7 @@ export const mockJobs: Job[] = [
       'Learning & development budget',
       'Remote work stipend',
     ],
-    postedDate: new Date('2024-01-15'),
+    postedDate: new Date('2025-11-03'),
     idealPersonality: {
       bigFive: {
         openness: 70,
@@ -120,7 +120,7 @@ export const mockJobs: Job[] = [
       'Equity compensation',
       'Design conference budget',
     ],
-    postedDate: new Date('2024-01-20'),
+    postedDate: new Date('2025-11-02'),
     idealPersonality: {
       bigFive: {
         openness: 85,
@@ -186,7 +186,7 @@ export const mockJobs: Job[] = [
       'Conference & research budget',
       'Latest ML hardware',
     ],
-    postedDate: new Date('2024-01-10'),
+    postedDate: new Date('2025-11-01'),
     idealPersonality: {
       bigFive: {
         openness: 85,
@@ -250,7 +250,7 @@ export const mockJobs: Job[] = [
       'Flexible hours',
       'Team offsites',
     ],
-    postedDate: new Date('2024-01-18'),
+    postedDate: new Date('2025-11-05'),
     idealPersonality: {
       bigFive: {
         openness: 80,
@@ -315,7 +315,7 @@ export const mockJobs: Job[] = [
       'Learning budget',
       'Home office setup',
     ],
-    postedDate: new Date('2024-01-12'),
+    postedDate: new Date('2025-11-04'),
     idealPersonality: {
       bigFive: {
         conscientiousness: 75,
@@ -379,7 +379,7 @@ export const mockJobs: Job[] = [
       'Executive coaching',
       'Sabbatical program',
     ],
-    postedDate: new Date('2024-01-05'),
+    postedDate: new Date('2025-11-06'),
     idealPersonality: {
       bigFive: {
         conscientiousness: 85,
@@ -444,7 +444,7 @@ export const mockJobs: Job[] = [
       'Learning budget',
       'Conference attendance',
     ],
-    postedDate: new Date('2024-01-22'),
+    postedDate: new Date('2025-11-07'),
     idealPersonality: {
       bigFive: {
         openness: 75,
@@ -508,7 +508,7 @@ export const mockJobs: Job[] = [
       'Design tools budget',
       'Flexible schedule',
     ],
-    postedDate: new Date('2024-01-25'),
+    postedDate: new Date('2025-11-08'),
     idealPersonality: {
       bigFive: {
         openness: 88,
@@ -573,7 +573,7 @@ export const mockJobs: Job[] = [
       'Security conference attendance',
       'Latest security tools',
     ],
-    postedDate: new Date('2024-01-08'),
+    postedDate: new Date('2025-11-09'),
     idealPersonality: {
       bigFive: {
         conscientiousness: 85,
@@ -637,7 +637,7 @@ export const mockJobs: Job[] = [
       'Learning budget',
       'On-call compensation',
     ],
-    postedDate: new Date('2024-01-14'),
+    postedDate: new Date('2025-11-01'),
     idealPersonality: {
       bigFive: {
         conscientiousness: 80,

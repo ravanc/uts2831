@@ -1,7 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
+import { useApplications } from '@/lib/application-context';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -20,13 +22,20 @@ import {
   ChevronDown,
   UserCircle,
   LogOut,
+  FileCheck,
+  Menu,
+  X,
 } from 'lucide-react';
 import { UserRole } from '@/types';
 
 export function Navbar() {
   const { user, switchRole } = useAuth();
+  const { getNewApplicationsCount } = useApplications();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   if (!user) return null;
+
+  const newApplicationsCount = getNewApplicationsCount();
 
   const getRoleBadgeColor = (role: UserRole) => {
     switch (role) {
@@ -46,6 +55,7 @@ export function Navbar() {
       items.push(
         { href: '/profile', label: 'My Profile', icon: User },
         { href: '/jobs', label: 'Find Jobs', icon: Briefcase },
+        { href: '/applications', label: 'My Applications', icon: FileCheck },
       );
     }
 
@@ -53,6 +63,7 @@ export function Navbar() {
       items.push(
         { href: '/candidates', label: 'Find Candidates', icon: User },
         { href: '/jobs', label: 'Job Listings', icon: Briefcase },
+        { href: '/applications', label: 'Applications', icon: FileCheck, badge: newApplicationsCount > 0 ? newApplicationsCount : undefined },
       );
     }
 
@@ -80,23 +91,38 @@ export function Navbar() {
             <span className="text-xl font-bold text-graphite">CrewFit</span>
           </Link>
 
-          {/* Navigation Links */}
+          {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-1">
             {navigationItems.map((item) => {
               const Icon = item.icon;
               return (
                 <Link key={item.href} href={item.href}>
-                  <Button variant="ghost" className="flex items-center space-x-2">
+                  <Button variant="ghost" className="flex items-center space-x-2 relative">
                     <Icon className="h-4 w-4" />
                     <span>{item.label}</span>
+                    {item.badge && (
+                      <Badge className="ml-2 h-5 w-5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs p-0">
+                        {item.badge}
+                      </Badge>
+                    )}
                   </Button>
                 </Link>
               );
             })}
           </div>
 
-          {/* User Menu */}
-          <div className="flex items-center space-x-4">
+          {/* User Menu & Mobile Toggle */}
+          <div className="flex items-center space-x-2 md:space-x-4">
+            {/* Mobile Menu Button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="md:hidden"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </Button>
+
             {/* Role Badge */}
             <Badge className={getRoleBadgeColor(user.role)}>
               {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
@@ -153,6 +179,37 @@ export function Navbar() {
             </DropdownMenu>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t">
+            <div className="py-4 space-y-2">
+              {navigationItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start flex items-center space-x-3"
+                    >
+                      <Icon className="h-5 w-5" />
+                      <span>{item.label}</span>
+                      {item.badge && (
+                        <Badge className="ml-auto h-5 w-5 flex items-center justify-center rounded-full bg-red-500 text-white text-xs p-0">
+                          {item.badge}
+                        </Badge>
+                      )}
+                    </Button>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );

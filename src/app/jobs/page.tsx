@@ -7,9 +7,14 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { mockJobs, mockEmployees, mockCompanies } from '@/data';
 import { calculatePersonalityMatch } from '@/lib/personality';
 import { generatePlainEnglishReasons } from '@/lib/plain-english-matching';
+import { useApplications } from '@/lib/application-context';
+import { useNotifications } from '@/components/notifications';
 import { Job, JobMatch } from '@/types';
 import {
   Briefcase,
@@ -21,6 +26,7 @@ import {
   Building2,
   CheckCircle2,
   Sparkles,
+  Send,
 } from 'lucide-react';
 
 export default function JobsPage() {
@@ -28,9 +34,17 @@ export default function JobsPage() {
   const [locationFilter, setLocationFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
   const [sortBy, setSortBy] = useState('match');
+  const [selectedJobForApplication, setSelectedJobForApplication] = useState<{ job: Job; matchScore: number } | null>(null);
+  const [selectedJobForDetails, setSelectedJobForDetails] = useState<{ job: Job; matchScore: number } | null>(null);
+  const [coverLetter, setCoverLetter] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Using first employee as the logged-in user
   const currentEmployee = mockEmployees[0];
+
+  // Application management
+  const { submitApplication, hasApplied } = useApplications();
+  const { showNotification } = useNotifications();
 
   // Calculate matches for all jobs
   const jobMatches = useMemo<JobMatch[]>(() => {
@@ -141,6 +155,55 @@ export default function JobsPage() {
     return 'Low Match';
   };
 
+  const handleApplyClick = (job: Job, matchScore: number) => {
+    setSelectedJobForApplication({ job, matchScore });
+    setCoverLetter('');
+  };
+
+  const handleSubmitApplication = async () => {
+    if (!selectedJobForApplication) return;
+
+    setIsSubmitting(true);
+
+    // Simulate a short delay for UX
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    try {
+      submitApplication(
+        selectedJobForApplication.job.id,
+        currentEmployee.id,
+        selectedJobForApplication.matchScore,
+        coverLetter || undefined
+      );
+
+      const company = mockCompanies.find(c => c.id === selectedJobForApplication.job.companyId);
+
+      showNotification(
+        'Application Submitted!',
+        `Your application for ${selectedJobForApplication.job.title} at ${company?.name} has been submitted successfully.`,
+        'success'
+      );
+
+      setSelectedJobForApplication(null);
+      setCoverLetter('');
+    } catch (error) {
+      showNotification(
+        'Application Failed',
+        'There was an error submitting your application. Please try again.',
+        'error'
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleCloseDialog = () => {
+    if (!isSubmitting) {
+      setSelectedJobForApplication(null);
+      setCoverLetter('');
+    }
+  };
+
   return (
     <MainLayout>
       <div className="container mx-auto px-4 py-8">
@@ -233,7 +296,7 @@ export default function JobsPage() {
                       <Badge className={`text-lg px-4 py-2 ${getMatchColor(matchData.overallScore)}`}>
                         {matchData.overallScore}% {getMatchLabel(matchData.overallScore)}
                       </Badge>
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm text-gray-500" suppressHydrationWarning>
                         <Clock className="inline h-3 w-3 mr-1" />
                         Posted {daysAgo} days ago
                       </span>
@@ -304,9 +367,24 @@ export default function JobsPage() {
 
                   {/* Actions */}
                   <div className="flex gap-3">
-                    <Button className="flex-1">Apply Now</Button>
+                    {hasApplied(job.id, currentEmployee.id) ? (
+                      <Button className="flex-1" disabled>
+                        <CheckCircle2 className="mr-2 h-4 w-4" />
+                        Applied
+                      </Button>
+                    ) : (
+                      <Button
+                        className="flex-1"
+                        onClick={() => handleApplyClick(job, matchData.overallScore)}
+                      >
+                        <Send className="mr-2 h-4 w-4" />
+                        Apply Now
+                      </Button>
+                    )}
                     <Button variant="outline">Save Job</Button>
-                    <Button variant="outline">View Details</Button>
+                    <Button variant="outline" onClick={() => setSelectedJobForDetails({ job, matchScore: matchData.overallScore })}>
+                      View Details
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -324,6 +402,241 @@ export default function JobsPage() {
           </Card>
         )}
       </div>
+
+      {/* Application Dialog */}
+      <Dialog open={!!selectedJobForApplication} onOpenChange={(open) => !open && handleCloseDialog()}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Apply for {selectedJobForApplication?.job.title}</DialogTitle>
+            <DialogDescription>
+              {selectedJobForApplication && (
+                <>
+                  {mockCompanies.find(c => c.id === selectedJobForApplication.job.companyId)?.name} •{' '}
+                  {selectedJobForApplication.job.location}
+                  <br />
+                  <span className="text-glacier-dark font-semibold">
+                    {selectedJobForApplication.matchScore}% Match
+                  </span>
+                </>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="coverLetter">
+                Cover Letter <span className="text-slate text-sm">(Optional)</span>
+              </Label>
+              <Textarea
+                id="coverLetter"
+                placeholder="Tell the employer why you're interested in this position and what makes you a great fit..."
+                value={coverLetter}
+                onChange={(e) => setCoverLetter(e.target.value)}
+                rows={8}
+                disabled={isSubmitting}
+              />
+            </div>
+            <div className="bg-mist-blue/30 border border-mist-blue rounded-lg p-4">
+              <p className="text-sm text-slate">
+                <strong className="text-graphite">Your application includes:</strong> Your profile, personality
+                assessment, skills, work experience, projects, and recommendations.
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCloseDialog} disabled={isSubmitting}>
+              Cancel
+            </Button>
+            <Button onClick={handleSubmitApplication} disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>Submitting...</>
+              ) : (
+                <>
+                  <Send className="mr-2 h-4 w-4" />
+                  Submit Application
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Job Details Dialog */}
+      <Dialog open={!!selectedJobForDetails} onOpenChange={(open) => !open && setSelectedJobForDetails(null)}>
+        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
+          {selectedJobForDetails && (() => {
+            const job = selectedJobForDetails.job;
+            const company = mockCompanies.find(c => c.id === job.companyId);
+
+            return (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="text-2xl">{job.title}</DialogTitle>
+                  <DialogDescription>
+                    {company?.name}
+                  </DialogDescription>
+                </DialogHeader>
+
+                {/* Job metadata outside DialogDescription to avoid nesting issues */}
+                <div className="flex flex-col gap-2 -mt-2">
+                  <div className="flex items-center gap-4 flex-wrap text-sm text-slate">
+                    <span className="flex items-center gap-1">
+                      <MapPin className="h-4 w-4" />
+                      {job.location}
+                    </span>
+                    <Badge variant="outline">{job.type}</Badge>
+                    <Badge variant="outline">{job.remotePolicy}</Badge>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <DollarSign className="h-4 w-4 text-slate" />
+                    <span className="font-semibold text-graphite">
+                      ${(job.salaryRange.min / 1000).toFixed(0)}k - ${(job.salaryRange.max / 1000).toFixed(0)}k
+                    </span>
+                  </div>
+                  <Badge className={`w-fit text-base px-3 py-1 ${getMatchColor(selectedJobForDetails.matchScore)}`}>
+                    {selectedJobForDetails.matchScore}% {getMatchLabel(selectedJobForDetails.matchScore)}
+                  </Badge>
+                </div>
+
+                <div className="space-y-6 py-4">
+                  {/* Description */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-graphite mb-2">About the Role</h3>
+                    <p className="text-slate">{job.description}</p>
+                  </div>
+
+                  {/* Responsibilities */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-graphite mb-3">Responsibilities</h3>
+                    <ul className="space-y-2">
+                      {job.responsibilities.map((resp, idx) => (
+                        <li key={idx} className="flex items-start gap-2">
+                          <CheckCircle2 className="h-5 w-5 text-glacier-dark flex-shrink-0 mt-0.5" />
+                          <span className="text-slate">{resp}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Requirements */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-graphite mb-3">Requirements</h3>
+                    <div className="space-y-4">
+                      <div>
+                        <h4 className="font-semibold text-sm mb-2 text-graphite">Required</h4>
+                        <ul className="space-y-1">
+                          {job.requirements.required.map((req, idx) => (
+                            <li key={idx} className="flex items-start gap-2">
+                              <span className="text-glacier-dark mt-1">•</span>
+                              <span className="text-slate text-sm">{req}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-sm mb-2 text-graphite">Preferred</h4>
+                        <ul className="space-y-1">
+                          {job.requirements.preferred.map((req, idx) => (
+                            <li key={idx} className="flex items-start gap-2">
+                              <span className="text-glacier-dark mt-1">•</span>
+                              <span className="text-slate text-sm">{req}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Skills */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-graphite mb-3">Skills</h3>
+                    <div className="space-y-2">
+                      <div>
+                        <h4 className="font-semibold text-sm mb-2">Required</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {job.skills.filter(s => s.required).map((skill, idx) => {
+                            const hasSkill = currentEmployee.skills.some(s => s.name === skill.name);
+                            return (
+                              <Badge
+                                key={idx}
+                                variant={hasSkill ? 'default' : 'outline'}
+                                className={hasSkill ? 'bg-green-500' : ''}
+                              >
+                                {hasSkill && <CheckCircle2 className="mr-1 h-3 w-3" />}
+                                {skill.name}
+                              </Badge>
+                            );
+                          })}
+                        </div>
+                      </div>
+                      {job.skills.filter(s => !s.required).length > 0 && (
+                        <div>
+                          <h4 className="font-semibold text-sm mb-2">Nice to Have</h4>
+                          <div className="flex flex-wrap gap-2">
+                            {job.skills.filter(s => !s.required).map((skill, idx) => {
+                              const hasSkill = currentEmployee.skills.some(s => s.name === skill.name);
+                              return (
+                                <Badge
+                                  key={idx}
+                                  variant={hasSkill ? 'default' : 'secondary'}
+                                  className={hasSkill ? 'bg-blue-500' : ''}
+                                >
+                                  {hasSkill && <CheckCircle2 className="mr-1 h-3 w-3" />}
+                                  {skill.name}
+                                </Badge>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Benefits */}
+                  <div>
+                    <h3 className="text-lg font-semibold text-graphite mb-3">Benefits</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      {job.benefits.map((benefit, idx) => (
+                        <div key={idx} className="flex items-center gap-2">
+                          <CheckCircle2 className="h-4 w-4 text-green-600 flex-shrink-0" />
+                          <span className="text-slate text-sm">{benefit}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Company Info */}
+                  {company && (
+                    <div className="bg-gradient-to-r from-glacier/20 to-lavender/20 rounded-lg p-4">
+                      <h3 className="text-lg font-semibold text-graphite mb-2">About {company.name}</h3>
+                      <p className="text-slate text-sm">{company.description}</p>
+                    </div>
+                  )}
+                </div>
+
+                <DialogFooter className="gap-2">
+                  <Button variant="outline" onClick={() => setSelectedJobForDetails(null)}>
+                    Close
+                  </Button>
+                  {hasApplied(job.id, currentEmployee.id) ? (
+                    <Button disabled>
+                      <CheckCircle2 className="mr-2 h-4 w-4" />
+                      Applied
+                    </Button>
+                  ) : (
+                    <Button onClick={() => {
+                      setSelectedJobForDetails(null);
+                      handleApplyClick(job, selectedJobForDetails.matchScore);
+                    }}>
+                      <Send className="mr-2 h-4 w-4" />
+                      Apply Now
+                    </Button>
+                  )}
+                </DialogFooter>
+              </>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
     </MainLayout>
   );
 }

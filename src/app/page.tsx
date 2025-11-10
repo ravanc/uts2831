@@ -33,6 +33,25 @@ export default function Home() {
     setShowChoice(true);
   };
 
+  const getHeroContent = () => {
+    if (user?.role === 'employer' || user?.role === 'executive') {
+      return {
+        badge: 'AI-Powered Hiring Platform',
+        title: 'Find the Perfect',
+        titleHighlight: 'Team Fit',
+        description: 'Go beyond resumes. Find candidates who will truly thrive in your team based on personality, skills, and cultural alignment.'
+      };
+    }
+    return {
+      badge: 'Privacy-First AI Matching',
+      title: 'Find Where You\'ll',
+      titleHighlight: 'Actually Thrive',
+      description: 'We understand your experiences, not just your resume. Get clear, simple reasons why you\'ll succeed at specific companies and teams.'
+    };
+  };
+
+  const heroContent = getHeroContent();
+
   return (
     <MainLayout>
       {/* Hero Section */}
@@ -41,94 +60,120 @@ export default function Home() {
           <div className="mx-auto max-w-4xl text-center">
             <div className="mb-6 inline-flex items-center rounded-full bg-mist-blue px-4 py-2 text-sm font-medium text-graphite">
               <Shield className="mr-2 h-4 w-4" />
-              Privacy-First AI Matching
+              {heroContent.badge}
             </div>
             <h1 className="mb-6 text-5xl font-bold tracking-tight text-graphite md:text-7xl">
-              Find Where You'll
+              {heroContent.title}
               <span className="bg-gradient-to-r from-glacier to-lavender bg-clip-text text-transparent">
-                {' '}Actually Thrive
+                {' '}{heroContent.titleHighlight}
               </span>
             </h1>
             <p className="mb-10 text-xl text-slate md:text-2xl">
-              We understand your experiences, not just your resume. Get clear, simple reasons
-              why you'll succeed at specific companies and teams.
+              {heroContent.description}
             </p>
 
-            {!linkedInConnected ? (
-              <div className="mb-8">
-                <Button
-                  size="lg"
-                  className="w-full sm:w-auto bg-glacier-dark hover:bg-glacier-darker text-white px-8 py-6 text-lg"
-                  onClick={handleLinkedInConnect}
-                >
-                  <Linkedin className="mr-3 h-6 w-6" />
-                  Link my LinkedIn profile
-                </Button>
-                <p className="mt-3 text-sm text-slate">Connect in seconds. Your data stays private.</p>
-              </div>
+            {user?.role === 'employee' ? (
+              <>
+                {!linkedInConnected ? (
+                  <div className="mb-8">
+                    <Button
+                      size="lg"
+                      className="w-full sm:w-auto bg-glacier-dark hover:bg-glacier-darker text-white px-8 py-6 text-lg"
+                      onClick={handleLinkedInConnect}
+                    >
+                      <Linkedin className="mr-3 h-6 w-6" />
+                      Link my LinkedIn profile
+                    </Button>
+                    <p className="mt-3 text-sm text-slate">Connect in seconds. Your data stays private.</p>
+                  </div>
+                ) : (
+                  <div className="mb-8">
+                    <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg inline-block">
+                      <p className="text-green-800 font-medium flex items-center gap-2">
+                        <Linkedin className="h-5 w-5" />
+                        LinkedIn connected successfully!
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {showChoice && (
+                  <div className="mb-8 animate-in fade-in duration-500">
+                    <p className="text-lg font-medium text-graphite mb-6">
+                      What would you like to do?
+                    </p>
+                    <div className="grid gap-4 md:grid-cols-2 max-w-2xl mx-auto">
+                      <Link href="/jobs">
+                        <Card className="cursor-pointer border-2 hover:border-glacier-dark hover:shadow-lg transition-all h-full shadow-sm">
+                          <CardHeader>
+                            <Search className="h-12 w-12 text-glacier-dark mb-2" />
+                            <CardTitle>Job Surfing</CardTitle>
+                            <CardDescription>
+                              Find companies and teams where you'll thrive with clear reasons why
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <Button className="w-full">Find where I'll thrive</Button>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                      <Link href="/experience">
+                        <Card className="cursor-pointer border-2 hover:border-lavender-dark hover:shadow-lg transition-all h-full shadow-sm">
+                          <CardHeader>
+                            <LineChart className="h-12 w-12 text-lavender-dark mb-2" />
+                            <CardTitle>Review My Experience</CardTitle>
+                            <CardDescription>
+                              See insights about your career journey, best teams, and satisfaction over time
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <Button variant="outline" className="w-full">Review my journey</Button>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    </div>
+                  </div>
+                )}
+
+                {!showChoice && (
+                  <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
+                    <Link href="/profile">
+                      <Button size="lg" variant="outline" className="w-full sm:w-auto">
+                        <User className="mr-2 h-5 w-5" />
+                        View Sample Profile
+                      </Button>
+                    </Link>
+                    <Link href="/jobs">
+                      <Button size="lg" variant="outline" className="w-full sm:w-auto">
+                        <Briefcase className="mr-2 h-5 w-5" />
+                        Explore Jobs
+                      </Button>
+                    </Link>
+                  </div>
+                )}
+              </>
             ) : (
-              <div className="mb-8">
-                <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg inline-block">
-                  <p className="text-green-800 font-medium flex items-center gap-2">
-                    <Linkedin className="h-5 w-5" />
-                    LinkedIn connected successfully!
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {showChoice && (
-              <div className="mb-8 animate-in fade-in duration-500">
-                <p className="text-lg font-medium text-graphite mb-6">
-                  What would you like to do?
-                </p>
-                <div className="grid gap-4 md:grid-cols-2 max-w-2xl mx-auto">
-                  <Link href="/jobs">
-                    <Card className="cursor-pointer border-2 hover:border-glacier-dark hover:shadow-lg transition-all h-full shadow-sm">
-                      <CardHeader>
-                        <Search className="h-12 w-12 text-glacier-dark mb-2" />
-                        <CardTitle>Job Surfing</CardTitle>
-                        <CardDescription>
-                          Find companies and teams where you'll thrive with clear reasons why
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <Button className="w-full">Find where I'll thrive</Button>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                  <Link href="/experience">
-                    <Card className="cursor-pointer border-2 hover:border-lavender-dark hover:shadow-lg transition-all h-full shadow-sm">
-                      <CardHeader>
-                        <LineChart className="h-12 w-12 text-lavender-dark mb-2" />
-                        <CardTitle>Review My Experience</CardTitle>
-                        <CardDescription>
-                          See insights about your career journey, best teams, and satisfaction over time
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <Button variant="outline" className="w-full">Review my journey</Button>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                </div>
-              </div>
-            )}
-
-            {!showChoice && (
               <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-                <Link href="/profile">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto">
-                    <User className="mr-2 h-5 w-5" />
-                    View Sample Profile
+                <Link href="/candidates">
+                  <Button size="lg" className="w-full sm:w-auto">
+                    <Search className="mr-2 h-5 w-5" />
+                    Find Candidates
                   </Button>
                 </Link>
-                <Link href="/jobs">
+                <Link href="/applications">
                   <Button size="lg" variant="outline" className="w-full sm:w-auto">
                     <Briefcase className="mr-2 h-5 w-5" />
-                    Explore Jobs
+                    View Applications
                   </Button>
                 </Link>
+                {user?.role === 'executive' && (
+                  <Link href="/analytics">
+                    <Button size="lg" variant="outline" className="w-full sm:w-auto">
+                      <BarChart3 className="mr-2 h-5 w-5" />
+                      Team Analytics
+                    </Button>
+                  </Link>
+                )}
               </div>
             )}
           </div>
