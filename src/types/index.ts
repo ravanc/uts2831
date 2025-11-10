@@ -269,6 +269,11 @@ export interface PersonalityMatch {
   considerations: string[];
 }
 
+export interface MatchReason {
+  point: string; // Main point/claim
+  evidence: string; // Supporting evidence
+}
+
 export interface JobMatch {
   jobId: string;
   overallScore: number; // 0-100
@@ -276,7 +281,7 @@ export interface JobMatch {
   skillsMatch: number; // 0-100
   interestsMatch: number; // 0-100
   preferencesMatch: number; // 0-100
-  reasoning: string[];
+  reasoning: MatchReason[];
 }
 
 export interface TeamDynamics {

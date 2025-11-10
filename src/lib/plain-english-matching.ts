@@ -1,137 +1,212 @@
-import { EmployeeProfile, Job } from '@/types';
+import { EmployeeProfile, Job, MatchReason } from '@/types';
 
 /**
  * Generate plain-English reasons for why a candidate matches a job
- * Based on real experiences, projects, and skills
+ * Based on real experiences, projects, and skills with specific examples
  */
 export function generatePlainEnglishReasons(
   employee: EmployeeProfile,
   job: Job
-): string[] {
-  const reasons: string[] = [];
+): MatchReason[] {
+  const reasons: MatchReason[] = [];
 
-  // Check for presentation/communication skills
-  const hasPresentation = employee.projects.some(p =>
-    p.technologies.some(t => t.toLowerCase().includes('figma') ||
-                            t.toLowerCase().includes('slides') ||
-                            t.toLowerCase().includes('powerpoint'))
+  // Check for specific technical skills with project evidence
+  const matchingTechSkills = employee.skills.filter(s =>
+    job.skills.some(js => js.name === s.name)
   );
 
-  if (hasPresentation && (job.title.toLowerCase().includes('marketing') ||
-                          job.title.toLowerCase().includes('design') ||
-                          job.title.toLowerCase().includes('product'))) {
-    reasons.push("You build crisp slides and narratives");
-  }
+  if (matchingTechSkills.length > 0) {
+    // Find projects that used these skills
+    const relevantProject = employee.projects.find(p =>
+      matchingTechSkills.some(skill =>
+        p.technologies.some(tech => tech.toLowerCase().includes(skill.name.toLowerCase()))
+      )
+    );
 
-  // Check for technical/programming skills
-  const techSkills = employee.skills.filter(s =>
-    ['React', 'Python', 'TypeScript', 'Node.js', 'Java'].includes(s.name)
-  );
-
-  if (techSkills.length >= 2 && job.title.toLowerCase().includes('engineer')) {
-    const skillList = techSkills.slice(0, 2).map(s => s.name).join(' and ');
-    reasons.push(`Strong ${skillList} expertise from hands-on projects`);
-  }
-
-  // Check for data/algorithm experience
-  const hasDataExperience = employee.skills.some(s =>
-    s.name.toLowerCase().includes('python') ||
-    s.name.toLowerCase().includes('tensorflow') ||
-    s.name.toLowerCase().includes('data')
-  );
-
-  if (hasDataExperience && (job.title.toLowerCase().includes('data') ||
-                            job.title.toLowerCase().includes('ml') ||
-                            job.title.toLowerCase().includes('algorithm'))) {
-    reasons.push("Your algorithmic work aligns with their data processing needs");
-  }
-
-  // Check for collaboration style
-  if (employee.personality.bigFive.agreeableness > 65) {
-    if (job.remotePolicy === 'remote') {
-      reasons.push("You thrive in async, collaborative environments");
-    } else {
-      reasons.push("You excel in team settings with strong collaboration");
+    if (relevantProject) {
+      const skillNames = matchingTechSkills.slice(0, 2).map(s => s.name).join(' & ');
+      reasons.push({
+        point: `Strong ${skillNames} expertise`,
+        evidence: `Built "${relevantProject.title}" using these technologies`
+      });
     }
   }
 
-  // Check for entrepreneurial experience
-  const hasEntrepreneurialExp = employee.interests.some(i =>
-    i.topics.some(t => t.toLowerCase().includes('startup') ||
-                      t.toLowerCase().includes('entrepreneur'))
-  ) || employee.workExperience.some(e =>
-    e.company.toLowerCase().includes('startup')
-  );
-
-  if (hasEntrepreneurialExp && job.companyId.includes('002')) { // InnovateTech is startup
-    reasons.push("Your startup experience fits their fast-paced culture");
-  }
-
-  // Check for leadership/mentoring
-  const hasLeadership = employee.workExperience.some(e =>
+  // Check for leadership/mentoring with specific achievements
+  const leadershipExp = employee.workExperience.find(e =>
     e.achievements.some(a =>
       a.toLowerCase().includes('mentor') ||
       a.toLowerCase().includes('lead') ||
-      a.toLowerCase().includes('team')
+      a.toLowerCase().includes('trained')
     )
   );
 
-  if (hasLeadership && (job.title.toLowerCase().includes('senior') ||
-                       job.title.toLowerCase().includes('lead'))) {
-    reasons.push("Proven mentorship experience from past roles");
-  }
-
-  // Check for design/UX skills
-  const hasDesignSkills = employee.skills.some(s =>
-    s.name.toLowerCase().includes('figma') ||
-    s.name.toLowerCase().includes('design') ||
-    s.name.toLowerCase().includes('ux')
-  );
-
-  if (hasDesignSkills && job.title.toLowerCase().includes('design')) {
-    reasons.push("Your user-centered design approach matches their needs");
-  }
-
-  // Add company-specific reasons based on job requirements
-  if (job.requirements.required.some(r => r.toLowerCase().includes('cloud'))) {
-    const hasCloud = employee.skills.some(s =>
-      s.name.toLowerCase().includes('aws') ||
-      s.name.toLowerCase().includes('azure') ||
-      s.name.toLowerCase().includes('docker')
+  if (leadershipExp && (job.title.toLowerCase().includes('senior') ||
+                       job.title.toLowerCase().includes('lead') ||
+                       job.responsibilities.some(r => r.toLowerCase().includes('mentor')))) {
+    const achievement = leadershipExp.achievements.find(a =>
+      a.toLowerCase().includes('mentor') ||
+      a.toLowerCase().includes('lead') ||
+      a.toLowerCase().includes('trained')
     );
-    if (hasCloud) {
-      reasons.push("They're investing in cloud infrastructure now");
+    if (achievement) {
+      reasons.push({
+        point: 'Proven leadership and mentoring experience',
+        evidence: `${achievement} at ${leadershipExp.company}`
+      });
     }
   }
 
-  // Fast-paced environment match
-  if (employee.personality.bigFive.openness > 70 &&
-      job.companyId.includes('002')) { // Startup
-    reasons.push("You adapt quickly to fast-changing priorities");
+  // Check for measurable impact with specific numbers
+  const impactfulExp = employee.workExperience.find(e =>
+    e.achievements.some(a => /\d+%|\d+x|\d+\+/.test(a))
+  );
+
+  if (impactfulExp) {
+    const impactAchievement = impactfulExp.achievements.find(a => /\d+%|\d+x|\d+\+/.test(a));
+    if (impactAchievement) {
+      reasons.push({
+        point: 'Track record of measurable impact',
+        evidence: `${impactAchievement} at ${impactfulExp.company}`
+      });
+    }
   }
 
-  // Detail-oriented for specific roles
-  if (employee.personality.bigFive.conscientiousness > 75 &&
-      (job.title.toLowerCase().includes('engineer') ||
-       job.title.toLowerCase().includes('architect'))) {
-    reasons.push("Your attention to detail fits complex system work");
+  // Check for relevant domain experience from past companies
+  const relevantIndustryExp = employee.workExperience.find(e => {
+    const jobLower = job.description.toLowerCase();
+    const expLower = e.company.toLowerCase() + ' ' + e.position.toLowerCase();
+
+    // Look for industry matches
+    if (jobLower.includes('saas') && (expLower.includes('saas') || expLower.includes('software'))) return true;
+    if (jobLower.includes('platform') && expLower.includes('platform')) return true;
+    if (jobLower.includes('cloud') && expLower.includes('cloud')) return true;
+    if (jobLower.includes('infrastructure') && expLower.includes('infrastructure')) return true;
+
+    return false;
+  });
+
+  if (relevantIndustryExp) {
+    reasons.push({
+      point: 'Relevant industry experience',
+      evidence: `${relevantIndustryExp.position} at ${relevantIndustryExp.company}`
+    });
   }
 
-  // Communication for cross-functional roles
-  if (employee.personality.bigFive.extraversion > 60 &&
-      (job.title.toLowerCase().includes('product') ||
-       job.title.toLowerCase().includes('manager'))) {
-    reasons.push("Strong communication skills for cross-team coordination");
+  // Check for specific project outcomes that match job needs
+  const impactfulProject = employee.projects.find(p =>
+    p.achievements && p.achievements.some(a =>
+      a.toLowerCase().includes('user') ||
+      a.toLowerCase().includes('performance') ||
+      a.toLowerCase().includes('revenue') ||
+      a.toLowerCase().includes('efficiency')
+    )
+  );
+
+  if (impactfulProject && job.description.toLowerCase().includes('user')) {
+    const achievement = impactfulProject.achievements.find(a =>
+      a.toLowerCase().includes('user') ||
+      a.toLowerCase().includes('performance') ||
+      a.toLowerCase().includes('efficiency')
+    );
+    if (achievement) {
+      reasons.push({
+        point: 'User-focused execution and outcomes',
+        evidence: `${impactfulProject.title}: ${achievement}`
+      });
+    }
   }
 
-  // Innovation focus
-  if (employee.personality.bigFive.openness > 80 &&
-      job.description.toLowerCase().includes('innovation')) {
-    reasons.push("Your creative problem-solving drives innovation");
+  // Check for collaboration evidence from reviews
+  const collaborationReview = employee.reviews.find(r =>
+    r.comment.toLowerCase().includes('collaborat') ||
+    r.comment.toLowerCase().includes('team') ||
+    r.comment.toLowerCase().includes('work with')
+  );
+
+  if (collaborationReview && (
+    job.description.toLowerCase().includes('collaborate') ||
+    job.description.toLowerCase().includes('team')
+  )) {
+    const reviewer = collaborationReview.reviewerName;
+    const snippet = collaborationReview.comment.length > 60
+      ? collaborationReview.comment.substring(0, 60) + '...'
+      : collaborationReview.comment;
+    reasons.push({
+      point: 'Strong collaborative approach',
+      evidence: `${reviewer}: "${snippet}"`
+    });
   }
 
-  // Return top 3 most relevant reasons
-  return reasons.slice(0, 3);
+  // Check for problem-solving with specific examples
+  const problemSolvingExp = employee.workExperience.find(e =>
+    e.achievements.some(a =>
+      a.toLowerCase().includes('optimized') ||
+      a.toLowerCase().includes('reduced') ||
+      a.toLowerCase().includes('improved') ||
+      a.toLowerCase().includes('solved')
+    )
+  );
+
+  if (problemSolvingExp && job.description.toLowerCase().includes('optimize')) {
+    const achievement = problemSolvingExp.achievements.find(a =>
+      a.toLowerCase().includes('optimized') ||
+      a.toLowerCase().includes('reduced') ||
+      a.toLowerCase().includes('improved')
+    );
+    if (achievement) {
+      reasons.push({
+        point: 'Demonstrated problem-solving abilities',
+        evidence: `${achievement} at ${problemSolvingExp.company}`
+      });
+    }
+  }
+
+  // Check for cultural fit based on reviews
+  const cultureReview = employee.reviews.find(r =>
+    r.comment.toLowerCase().includes('culture') ||
+    r.comment.toLowerCase().includes('value') ||
+    r.comment.toLowerCase().includes('attitude')
+  );
+
+  if (cultureReview && job.description.toLowerCase().includes('culture')) {
+    const snippet = cultureReview.comment.length > 50
+      ? cultureReview.comment.substring(0, 50) + '...'
+      : cultureReview.comment;
+    reasons.push({
+      point: 'Cultural alignment',
+      evidence: `${cultureReview.reviewerName}: "${snippet}"`
+    });
+  }
+
+  // Check for scale/complexity experience
+  const scaleExp = employee.workExperience.find(e =>
+    e.achievements.some(a =>
+      a.toLowerCase().includes('million') ||
+      a.toLowerCase().includes('scale') ||
+      a.toLowerCase().includes('thousands')
+    )
+  );
+
+  if (scaleExp && (
+    job.description.toLowerCase().includes('scale') ||
+    job.description.toLowerCase().includes('million')
+  )) {
+    const achievement = scaleExp.achievements.find(a =>
+      a.toLowerCase().includes('million') ||
+      a.toLowerCase().includes('scale') ||
+      a.toLowerCase().includes('thousands')
+    );
+    if (achievement) {
+      reasons.push({
+        point: 'Experience building at scale',
+        evidence: achievement
+      });
+    }
+  }
+
+  // Return top 3-4 most relevant reasons
+  return reasons.slice(0, 4);
 }
 
 /**

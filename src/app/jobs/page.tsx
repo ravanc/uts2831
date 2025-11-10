@@ -313,11 +313,14 @@ export default function JobsPage() {
                       Why You'll Thrive Here
                     </h4>
                     {matchData.reasoning.length > 0 ? (
-                      <ul className="space-y-3">
+                      <ul className="space-y-4">
                         {matchData.reasoning.map((reason, idx) => (
                           <li key={idx} className="flex items-start gap-3">
-                            <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-                            <span className="text-gray-900 font-medium">{reason}</span>
+                            <CheckCircle2 className="h-5 w-5 text-green-600 flex-shrink-0 mt-1" />
+                            <div className="flex-1">
+                              <div className="text-graphite font-semibold text-base">{reason.point}</div>
+                              <div className="text-slate text-sm mt-0.5">{reason.evidence}</div>
+                            </div>
                           </li>
                         ))}
                       </ul>

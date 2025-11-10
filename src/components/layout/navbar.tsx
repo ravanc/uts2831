@@ -25,6 +25,7 @@ import {
   FileCheck,
   Menu,
   X,
+  Star,
 } from 'lucide-react';
 import { UserRole } from '@/types';
 
@@ -56,6 +57,7 @@ export function Navbar() {
         { href: '/profile', label: 'My Profile', icon: User },
         { href: '/jobs', label: 'Find Jobs', icon: Briefcase },
         { href: '/applications', label: 'My Applications', icon: FileCheck },
+        { href: '/reviews', label: 'Reviews', icon: Star },
       );
     }
 
