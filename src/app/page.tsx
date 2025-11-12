@@ -34,7 +34,7 @@ export default function Home() {
   };
 
   const getHeroContent = () => {
-    if (user?.role === 'employer' || user?.role === 'executive') {
+    if (user?.role === 'employer') {
       return {
         badge: 'AI-Powered Hiring Platform',
         title: 'Find the Perfect',
@@ -166,14 +166,6 @@ export default function Home() {
                     View Applications
                   </Button>
                 </Link>
-                {user?.role === 'executive' && (
-                  <Link href="/analytics">
-                    <Button size="lg" variant="outline" className="w-full sm:w-auto">
-                      <BarChart3 className="mr-2 h-5 w-5" />
-                      Team Analytics
-                    </Button>
-                  </Link>
-                )}
               </div>
             )}
           </div>
@@ -272,11 +264,11 @@ export default function Home() {
             </h2>
             <p className="mx-auto max-w-2xl text-lg text-slate">
               This is a demo app. Switch between different roles to see how the platform
-              works for employees, employers, and executives.
+              works for employees and employers.
             </p>
           </div>
 
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid gap-8 md:grid-cols-2 max-w-4xl mx-auto">
             <Card
               className="cursor-pointer border-2 hover:border-glacier-dark hover:shadow-lg transition-all shadow-sm"
               onClick={() => switchRole('employee')}
@@ -317,28 +309,6 @@ export default function Home() {
                   variant={user?.role === 'employer' ? 'default' : 'outline'}
                 >
                   {user?.role === 'employer' ? 'Current View' : 'Switch to Employer'}
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card
-              className="cursor-pointer border-2 hover:border-lavender-dark hover:shadow-lg transition-all shadow-sm"
-              onClick={() => switchRole('executive')}
-            >
-              <CardHeader>
-                <Building2 className="mb-4 h-12 w-12 text-lavender-dark" />
-                <CardTitle>Executive View</CardTitle>
-                <CardDescription>
-                  Access team analytics, org structure insights, and data-driven
-                  hiring recommendations.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button
-                  className="w-full"
-                  variant={user?.role === 'executive' ? 'default' : 'outline'}
-                >
-                  {user?.role === 'executive' ? 'Current View' : 'Switch to Executive'}
                 </Button>
               </CardContent>
             </Card>

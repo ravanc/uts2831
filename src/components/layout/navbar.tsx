@@ -44,8 +44,6 @@ export function Navbar() {
         return 'bg-blue-500';
       case 'employer':
         return 'bg-green-500';
-      case 'executive':
-        return 'bg-purple-500';
     }
   };
 
@@ -61,18 +59,11 @@ export function Navbar() {
       );
     }
 
-    if (user.role === 'employer' || user.role === 'executive') {
+    if (user.role === 'employer') {
       items.push(
         { href: '/candidates', label: 'Find Candidates', icon: User },
         { href: '/jobs', label: 'Job Listings', icon: Briefcase },
         { href: '/applications', label: 'Applications', icon: FileCheck, badge: newApplicationsCount > 0 ? newApplicationsCount : undefined },
-      );
-    }
-
-    if (user.role === 'executive') {
-      items.push(
-        { href: '/organization', label: 'Organization', icon: Building2 },
-        { href: '/analytics', label: 'Team Analytics', icon: BarChart3 },
       );
     }
 
@@ -160,16 +151,6 @@ export function Navbar() {
                   <span>Employer View</span>
                   {user.role === 'employer' && (
                     <Badge className="ml-auto bg-green-500">Active</Badge>
-                  )}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => switchRole('executive')}
-                  className={user.role === 'executive' ? 'bg-purple-50' : ''}
-                >
-                  <Building2 className="mr-2 h-4 w-4" />
-                  <span>Executive View</span>
-                  {user.role === 'executive' && (
-                    <Badge className="ml-auto bg-purple-500">Active</Badge>
                   )}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />

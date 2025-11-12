@@ -2,7 +2,7 @@
 // User Roles and Authentication
 // ============================================================================
 
-export type UserRole = 'employee' | 'employer' | 'executive';
+export type UserRole = 'employee' | 'employer';
 
 export interface User {
   id: string;
