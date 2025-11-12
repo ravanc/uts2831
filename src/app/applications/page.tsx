@@ -46,7 +46,7 @@ export default function ApplicationsPage() {
 
   // Mark applications as viewed when employer opens this page
   useEffect(() => {
-    if (user?.role === 'employer' || user?.role === 'executive') {
+    if (user?.role === 'employer') {
       markApplicationsAsViewed();
     }
   }, [markApplicationsAsViewed, user?.role]);
