@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { MainLayout } from '@/components/layout/main-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +13,7 @@ import { Separator } from '@/components/ui/separator';
 import { PersonalityRadar } from '@/components/features/personality-radar';
 import { mockEmployees } from '@/data';
 import { getMBTIDescription, getBigFiveInsights, getDISCInsights } from '@/lib/personality';
+import { EmployeeProfile, Recommendation } from '@/types';
 import {
   Mail,
   Phone,
@@ -28,11 +30,50 @@ import {
   Users,
   Target,
   Sparkles,
+  ClipboardList,
+  UserPlus,
 } from 'lucide-react';
 
 export default function ProfilePage() {
   // Using the first employee as the current user's profile
-  const employee = mockEmployees[0];
+  const [employee, setEmployee] = useState<EmployeeProfile>(mockEmployees[0]);
+  const [customReferences, setCustomReferences] = useState<Recommendation[]>([]);
+
+  useEffect(() => {
+    // Load personality profile from localStorage if available
+    const storedProfile = localStorage.getItem('userPersonalityProfile');
+    if (storedProfile) {
+      const parsedProfile = JSON.parse(storedProfile);
+      setEmployee(prev => ({
+        ...prev,
+        personality: {
+          ...prev.personality,
+          ...(parsedProfile.bigFive && { bigFive: parsedProfile.bigFive }),
+          ...(parsedProfile.mbti && { mbti: parsedProfile.mbti }),
+          ...(parsedProfile.disc && { disc: parsedProfile.disc }),
+        },
+      }));
+    }
+
+    // Load references from localStorage
+    const storedReferences = localStorage.getItem('references');
+    if (storedReferences) {
+      const parsedReferences = JSON.parse(storedReferences);
+      // Convert to Recommendation format
+      const recommendations: Recommendation[] = parsedReferences.map((ref: any) => ({
+        id: ref.id,
+        recommenderId: ref.id,
+        recommenderName: ref.refereeName,
+        recommenderPosition: ref.refereePosition,
+        recommenderCompany: ref.refereeCompany,
+        relationship: ref.relationship,
+        text: ref.text,
+        date: new Date(ref.date),
+        verified: ref.verified,
+      }));
+      setCustomReferences(recommendations);
+    }
+  }, []);
 
   const mbtiInfo = getMBTIDescription(employee.personality.mbti.type);
   const bigFiveInsights = getBigFiveInsights(employee.personality.bigFive);
@@ -94,6 +135,20 @@ export default function ProfilePage() {
                         Find where I'll thrive
                       </Button>
                     </Link>
+                    <div className="flex gap-2">
+                      <Link href="/assessments" className="flex-1">
+                        <Button variant="outline" className="w-full">
+                          <ClipboardList className="mr-2 h-4 w-4" />
+                          Assessments
+                        </Button>
+                      </Link>
+                      <Link href="/references" className="flex-1">
+                        <Button variant="outline" className="w-full">
+                          <UserPlus className="mr-2 h-4 w-4" />
+                          References
+                        </Button>
+                      </Link>
+                    </div>
                     <Button variant="outline">Edit Profile</Button>
                   </div>
                 </div>
@@ -465,7 +520,7 @@ export default function ProfilePage() {
                   </div>
                 ))}
 
-                {employee.recommendations.map((rec) => (
+                {[...employee.recommendations, ...customReferences].map((rec) => (
                   <div key={rec.id} className="border-l-4 border-purple-500 pl-4">
                     <div className="mb-2">
                       <h4 className="font-semibold">{rec.recommenderName}</h4>
