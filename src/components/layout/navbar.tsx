@@ -78,9 +78,11 @@ export function Navbar() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-glacier-dark to-lavender-dark text-white font-bold">
-              CF
-            </div>
+            <img
+              src="/crewfit_logo.png"
+              alt="CrewFit Logo"
+              className="h-8 w-8 object-contain"
+            />
             <span className="text-xl font-bold text-graphite">CrewFit</span>
           </Link>
 

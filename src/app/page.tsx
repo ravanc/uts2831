@@ -21,16 +21,27 @@ import {
   LineChart,
   Shield,
   Zap,
+  Upload,
 } from 'lucide-react';
 
 export default function Home() {
   const { user, switchRole } = useAuth();
   const [linkedInConnected, setLinkedInConnected] = useState(false);
   const [showChoice, setShowChoice] = useState(false);
+  const [resumeUploaded, setResumeUploaded] = useState(false);
 
   const handleLinkedInConnect = () => {
     setLinkedInConnected(true);
     setShowChoice(true);
+  };
+
+  const handleResumeUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // In a real app, this would upload the file to a server
+      setResumeUploaded(true);
+      setShowChoice(true);
+    }
   };
 
   const getHeroContent = () => {
@@ -74,7 +85,7 @@ export default function Home() {
 
             {user?.role === 'employee' ? (
               <>
-                {!linkedInConnected ? (
+                {!linkedInConnected && !resumeUploaded ? (
                   <div className="mb-8">
                     <Button
                       size="lg"
@@ -85,13 +96,47 @@ export default function Home() {
                       Link my LinkedIn profile
                     </Button>
                     <p className="mt-3 text-sm text-slate">Connect in seconds. Your data stays private.</p>
+
+                    {/* Divider */}
+                    <div className="flex items-center gap-4 my-6 max-w-md mx-auto">
+                      <div className="flex-1 border-t border-slate/30"></div>
+                      <span className="text-sm text-slate">or</span>
+                      <div className="flex-1 border-t border-slate/30"></div>
+                    </div>
+
+                    {/* Resume Upload */}
+                    <div className="flex flex-col items-center gap-2">
+                      <label htmlFor="resume-upload" className="cursor-pointer">
+                        <div className="flex items-center gap-2 px-6 py-3 border-2 border-slate/30 rounded-lg hover:border-glacier-dark hover:bg-glacier/5 transition-all">
+                          <Upload className="h-5 w-5 text-slate" />
+                          <span className="text-slate font-medium">Upload Resume</span>
+                        </div>
+                        <input
+                          id="resume-upload"
+                          type="file"
+                          accept=".pdf,.doc,.docx"
+                          className="hidden"
+                          onChange={handleResumeUpload}
+                        />
+                      </label>
+                      <p className="text-xs text-slate">PDF, DOC, or DOCX</p>
+                    </div>
                   </div>
                 ) : (
                   <div className="mb-8">
                     <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg inline-block">
                       <p className="text-green-800 font-medium flex items-center gap-2">
-                        <Linkedin className="h-5 w-5" />
-                        LinkedIn connected successfully!
+                        {linkedInConnected ? (
+                          <>
+                            <Linkedin className="h-5 w-5" />
+                            LinkedIn connected successfully!
+                          </>
+                        ) : (
+                          <>
+                            <Upload className="h-5 w-5" />
+                            Resume uploaded successfully!
+                          </>
+                        )}
                       </p>
                     </div>
                   </div>

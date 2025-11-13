@@ -18,6 +18,16 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "CrewFit - Find Your Perfect Fit",
   description: "AI-powered talent matching platform connecting employers and employees",
+  icons: {
+    icon: "/crewfit_logo.png",
+    shortcut: "/crewfit_logo.png",
+    apple: "/crewfit_logo.png",
+  },
+  openGraph: {
+    title: "CrewFit - Find Your Perfect Fit",
+    description: "AI-powered talent matching platform connecting employers and employees",
+    images: ["/crewfit_logo.png"],
+  },
 };
 
 export default function RootLayout({
